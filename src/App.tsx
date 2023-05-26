@@ -3,7 +3,7 @@ import { LoginButton } from "./components";
 import { CommentGenerator } from "./pages";
 
 export const App = () => {
-  const { user, isAuthenticated } = useAuth0();
+  const { isAuthenticated } = useAuth0();
   return isAuthenticated ? (
     <>
       <CommentGenerator />

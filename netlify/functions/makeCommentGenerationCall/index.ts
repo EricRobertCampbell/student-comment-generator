@@ -37,7 +37,7 @@ const handler: Handler = async (
 				content: prompt,
 			},
 		];
-		console.log(`About to make ChatGPT call with ${prompt} and ${process.env.API_KEY}`);
+		console.log(`About to make ChatGPT call with ${prompt}`);
 		response = await openai.createChatCompletion({
 			model: "gpt-3.5-turbo",
 			messages,

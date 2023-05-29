@@ -10,22 +10,29 @@ const handler: Handler = async (
 	try {
 		console.log(event.body);
 		// @ts-expect-error
-		const studentInfo = JSON.parse(event.body);
+		const { student, options } = JSON.parse(event.body);
 		const configuration = new Configuration({
 			apiKey: process.env.API_KEY,
 		});
 		const openai = new OpenAIApi(configuration);
 		const prompt =
-			`Write a report card comment for a ${studentInfo.quality} student, ${studentInfo.name}, in the Mathematics 30-1 class.` +
-			(studentInfo.strengths
-				? `Their strengths are ${studentInfo.strengths}.`
+			`Write a report card comment for a ${student.quality} student, ${student.name}` +
+			(options.className ? `, in the ${options.className} class.` : ".") +
+			(student.strengths
+				? `Their strengths are '${student.strengths}'.`
 				: "") +
-			(studentInfo.weaknesses
-				? `Their weaknesses are ${studentInfo.weaknesses}.`
+			(student.weaknesses
+				? `Their weaknesses are '${student.weaknesses}'.`
 				: ``) +
-			(studentInfo.roughComment
-				? `The comment should roughly say ${studentInfo.roughComment}.`
-				: ``);
+			(student.roughComment
+				? `The comment should roughly say ${student.roughComment}.`
+				: ``) +
+			// (options.wordLimit
+			// 	? `The comment should be no more than ${options.wordLimit} words.`
+			// 	: "") +
+			(options.lastComment
+				? `This is the final comment of the year, and should be in the past tense.`
+				: "");
 		const messages: Array<ChatCompletionRequestMessage> = [
 			{
 				role: "system",

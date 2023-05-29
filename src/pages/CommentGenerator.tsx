@@ -212,45 +212,86 @@ export const CommentGenerator = () => {
                 </td>
                 <td key="actionButtons">
                   <button
+                    disabled={apiState[student.id]?.loading}
                     onClick={async () => {
-                      const response = await fetch(
-                        "/.netlify/functions/makeCommentGenerationCall",
-                        {
-                          method: "POST",
-                          headers: {
-                            "Content-Type": "application/json",
-                          },
-                          body: JSON.stringify(
-                            {
-                              student: student.asObject(),
-                              options: {
-                                className,
-                                wordLimit,
-                                lastComment,
-                              },
+                      try {
+                        setApiState((oldApiState) => {
+                          return {
+                            ...oldApiState,
+                            [student.id]: {
+                              loading: true,
+                              complete: false,
                             },
-                            null,
-                            4
-                          ),
-                        }
-                      );
-                      const json = await response.json();
-                      const comment = genericize(json.completion, {
-                        name: student.name,
-                      });
-                      setStudentGroup((oldStudentGroup) => {
-                        const newStudentGroup = [...oldStudentGroup];
-                        for (let newStudent of newStudentGroup) {
-                          if (student.id === newStudent.id) {
-                            newStudent.comment = comment;
-                            break;
+                          };
+                        });
+                        const response = await fetch(
+                          "/.netlify/functions/makeCommentGenerationCall",
+                          {
+                            method: "POST",
+                            headers: {
+                              "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify(
+                              {
+                                student: student.asObject(),
+                                options: {
+                                  className,
+                                  wordLimit,
+                                  lastComment,
+                                },
+                              },
+                              null,
+                              4
+                            ),
                           }
-                        }
-                        return newStudentGroup;
-                      });
+                        );
+                        const json = await response.json();
+                        const comment = genericize(json.completion, {
+                          name: student.name,
+                        });
+                        setStudentGroup((oldStudentGroup) => {
+                          const newStudentGroup = [...oldStudentGroup];
+                          for (let newStudent of newStudentGroup) {
+                            if (student.id === newStudent.id) {
+                              newStudent.comment = comment;
+                              break;
+                            }
+                          }
+                          return newStudentGroup;
+                        });
+                        setApiState((oldApiState) => {
+                          return {
+                            ...oldApiState,
+                            [student.id]: {
+                              loading: false,
+                              complete: true,
+                            },
+                          };
+                        });
+                      } catch (e) {
+                        setApiState((oldApiState) => {
+                          return {
+                            ...oldApiState,
+                            [student.id]: {
+                              loading: false,
+                              error:
+                                e instanceof Error
+                                  ? e
+                                  : new Error(JSON.stringify(e, null, 4)),
+                              complete: false,
+                            },
+                          };
+                        });
+                      }
                     }}
                   >
-                    Generate Comment
+                    {apiState[student.id]?.loading
+                      ? "Loading..."
+                      : apiState[student.id]?.error
+                      ? "Error - Try Again in a Few Minutes"
+                      : student.comment
+                      ? "Regenerate Comment"
+                      : "Generate Comment"}
                   </button>
                 </td>
               </tr>

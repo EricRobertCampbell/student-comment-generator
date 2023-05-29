@@ -300,10 +300,15 @@ export const CommentGenerator = () => {
         </table>
         <button
           onClick={() => {
+            const newStudent = new Student({ name: "", quality: "Average" });
             setStudentGroup((oldStudentGroup) => [
               ...oldStudentGroup,
-              new Student({ name: "", quality: "Average" }),
+              newStudent,
             ]);
+            setApiState((oldApiState) => ({
+              ...oldApiState,
+              [newStudent.id]: defaultApiCallState,
+            }));
           }}
         >
           Add student

@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { studentQualities, Student } from "../classes/Student";
-import { LogoutButton } from "../components";
+import { LogoutButton, ClassUpload } from "../components";
 import { genericize } from "../utility/genericize";
 
 const tableHeaders = [
@@ -29,6 +29,21 @@ export const CommentGenerator = () => {
   const [className, setClassName] = useState<string>("");
   const [wordLimit, setWordLimit] = useState<number>(300);
   const [lastComment, setLastComment] = useState<boolean>(false);
+
+  // change the API state whenever the student group changes
+  useEffect(() => {
+    setApiState((oldApiState) => {
+      return studentGroup.reduce((acc: typeof apiState, student) => {
+        if (!(student.id in apiState)) {
+          acc[student.id] = defaultApiCallState;
+        } else {
+          acc[student.id] = oldApiState[student.id];
+        }
+        return acc;
+      }, {});
+    });
+  }, [studentGroup]);
+
   return (
     <>
       <h2>Comment Generator</h2>
@@ -74,7 +89,8 @@ export const CommentGenerator = () => {
         </div>
       </section>
       <section key="comments">
-        <h2>Comments</h2>
+        <h2 key="comments-title">Comments</h2>
+        <ClassUpload key="class-upload" setStudents={setStudentGroup} />
         {/* Table of the students */}
         <table style={{ width: "100%", margin: "0 8px" }}>
           <thead>
@@ -130,7 +146,11 @@ export const CommentGenerator = () => {
                     }}
                   >
                     {studentQualities.map((quality) => {
-                      return <option value={quality}>{quality}</option>;
+                      return (
+                        <option key={quality} value={quality}>
+                          {quality}
+                        </option>
+                      );
                     })}
                   </select>
                 </td>
@@ -299,6 +319,7 @@ export const CommentGenerator = () => {
           </tbody>
         </table>
         <button
+          key="add-student-button"
           onClick={() => {
             const newStudent = new Student({ name: "", quality: "Average" });
             setStudentGroup((oldStudentGroup) => [

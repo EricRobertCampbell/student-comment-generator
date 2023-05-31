@@ -8,10 +8,24 @@ const handler: Handler = async (
 ) => {
 	let response: $TSFixMe;
 	try {
+		console.log(event.body);
+		// @ts-expect-error
+		const studentInfo = JSON.parse(event.body);
 		const configuration = new Configuration({
 			apiKey: process.env.API_KEY,
 		});
 		const openai = new OpenAIApi(configuration);
+		const prompt =
+			`Write a report card comment for a ${studentInfo.quality} student, ${studentInfo.name}, in the Mathematics 30-1 class.` +
+			(studentInfo.strengths
+				? `Their strengths are ${studentInfo.strengths}.`
+				: "") +
+			(studentInfo.weaknesses
+				? `Their weaknesses are ${studentInfo.weaknesses}.`
+				: ``) +
+			(studentInfo.roughComment
+				? `The comment should roughly say ${studentInfo.roughComment}.`
+				: ``);
 		const messages: Array<ChatCompletionRequestMessage> = [
 			{
 				role: "system",
@@ -20,10 +34,10 @@ const handler: Handler = async (
 			},
 			{
 				role: "user",
-				content:
-					"Write a report card comment for a decent student in the Mathematics 30-1 class who is very attentive but doesn't practice enough at home.",
+				content: prompt,
 			},
 		];
+		console.log(`About to make ChatGPT call with ${prompt}`);
 		response = await openai.createChatCompletion({
 			model: "gpt-3.5-turbo",
 			messages,

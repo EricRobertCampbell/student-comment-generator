@@ -48,4 +48,13 @@ export class Student {
       this;
     return { name, quality, strengths, weaknesses, roughComment, comment };
   }
+
+  static sanitizeQuality(possibleQuality: unknown): Quality {
+    // @ts-expect-error
+    if (studentQualities.includes(possibleQuality)) {
+      // @ts-expect-error
+      return possibleQuality;
+    }
+    return "Average";
+  }
 }

@@ -32,7 +32,8 @@ const handler: Handler = async (
 			// 	: "") +
 			(options.lastComment
 				? `This is the final comment of the year, and should be in the past tense.`
-				: "");
+				: "") +
+			" Avoid the first person.";
 		const messages: Array<ChatCompletionRequestMessage> = [
 			{
 				role: "system",

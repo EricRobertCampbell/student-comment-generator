@@ -10,8 +10,15 @@ export const genericize = (
 ) => {
   let genericizedComment = comment;
   const replacements: Array<[RegExp, string]> = [
-    [/\ss?he\s/g, `{{he/she}}`],
-    [/\s(He)|(She)\s/g, `{{He/She}}`],
+    [/\ss?he\s/g, ` {{he/she}} `],
+    [/\sthey\s/g, " {{he/she}} "],
+    [/\stheir\s/g, " {{his/her}} "],
+    [/\sTheir\s/g, " {{His/her}} "],
+    [/\s(his)|(her)\s/g, " {{his/her}} "],
+    [/\s(His)|(Her)\s/g, " {{His/Her}} "],
+    [/\s(He)|(She)\s/g, ` {{He/She}} `],
+    [/\sThey\s/g, ` {{He/She}} `],
+    [/\s+/g, " "],
   ];
   if (options.name) {
     const { name } = options;

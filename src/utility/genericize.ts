@@ -14,9 +14,9 @@ export const genericize = (
     [/\sthey\s/g, " {{he/she}} "],
     [/\stheir\s/g, " {{his/her}} "],
     [/\sTheir\s/g, " {{His/her}} "],
-    [/\s(his)|(her)\s/g, " {{his/her}} "],
-    [/\s(His)|(Her)\s/g, " {{His/Her}} "],
-    [/\s(He)|(She)\s/g, ` {{He/She}} `],
+    [/\s(his|her)\s/g, " {{his/her}} "],
+    [/\s(His|Her)\s/g, " {{His/Her}} "],
+    [/\s(He|She)\s/g, ` {{He/She}} `],
     [/\sThey\s/g, ` {{He/She}} `],
     [/\s+/g, " "],
   ];

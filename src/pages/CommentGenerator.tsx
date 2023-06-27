@@ -69,36 +69,50 @@ export const CommentGenerator = () => {
             <Typography>Class Customization Options</Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-evenly",
-                alignItems: "center",
-              }}
+            <Grid
+              container
+              sx={{ alignItems: "center", justifyContent: "center" }}
             >
-              <TextField
-                label="Class Name"
-                name="Class Name"
-                onChange={(e) => setClassName(e.target.value)}
-              />
-              <TextField
-                label="Word Limit"
-                name="Word Limit"
-                type="number"
-                value={wordLimit}
-                onChange={(e) => setWordLimit(Number(e.target.value))}
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={lastComment}
-                    onChange={(e) => setLastComment(e.target.checked)}
+              <Grid item sm={12} md={6} margin={2}>
+                <TextField
+                  fullWidth
+                  label="Class Name"
+                  name="Class Name"
+                  value={className}
+                  onChange={(e) => setClassName(e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12} md={6} margin={2}>
+                <TextField
+                  fullWidth
+                  label="Word Limit"
+                  name="Word Limit"
+                  type="number"
+                  value={wordLimit}
+                  onChange={(e) => setWordLimit(Number(e.target.value))}
+                />
+              </Grid>
+              <Grid item xs={12} sx={{ alignItems: "center" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={lastComment}
+                        onChange={(e) => setLastComment(e.target.checked)}
+                      />
+                    }
+                    label="Last Comments?"
                   />
-                }
-                label="Last Comments?"
-              />
-            </div>
+                </div>
+              </Grid>
+            </Grid>
           </AccordionDetails>
         </Accordion>
       </section>
@@ -114,7 +128,7 @@ export const CommentGenerator = () => {
               {studentGroup.map((student) => (
                 <Card id={student.id} sx={{ p: 3, mt: 3 }}>
                   <Grid container spacing={2}>
-                    <Grid item xs={3}>
+                    <Grid item xs={12} sm={6}>
                       <TextField
                         name="name"
                         label="Name"
@@ -136,7 +150,7 @@ export const CommentGenerator = () => {
                         }}
                       />
                     </Grid>
-                    <Grid item xs={3} key="quality">
+                    <Grid item xs={12} sm={6} key="quality">
                       <FormControl style={{ width: "100%" }}>
                         <InputLabel id={`quality_${student.id}`}>
                           Quality
@@ -171,11 +185,12 @@ export const CommentGenerator = () => {
                         </Select>
                       </FormControl>
                     </Grid>
-                    <Grid item xs={6}>
+                    <Grid item xs={12} md={6}>
                       <TextField
                         name="strengths"
                         label="Strengths"
                         multiline={true}
+                        minRows={2}
                         value={student.strengths}
                         fullWidth
                         onChange={(e) => {
@@ -193,12 +208,13 @@ export const CommentGenerator = () => {
                         }}
                       />
                     </Grid>
-                    <Grid item xs={6}>
+                    <Grid item xs={12} md={6}>
                       <TextField
                         name="weaknesses"
                         label="Weaknesses"
                         fullWidth
                         multiline
+                        minRows={2}
                         value={student.weaknesses}
                         onChange={(e) => {
                           const weaknesses = e.target.value;
@@ -215,12 +231,13 @@ export const CommentGenerator = () => {
                         }}
                       />
                     </Grid>
-                    <Grid key="roughComment" item xs={6}>
+                    <Grid key="roughComment" item xs={12}>
                       <TextField
                         name="roughComment"
                         label="Rough Comment"
                         fullWidth
                         multiline
+                        minRows={2}
                         value={student.roughComment}
                         onChange={(e) => {
                           const roughComment = e.target.value;
@@ -237,28 +254,30 @@ export const CommentGenerator = () => {
                         }}
                       />
                     </Grid>
-                    <Grid key="comment" item xs={12}>
-                      <TextField
-                        name="comment"
-                        label="Comment"
-                        value={student.comment}
-                        fullWidth
-                        multiline
-                        onChange={(e) => {
-                          const comment = e.target.value;
-                          setStudentGroup((oldStudentGroup) => {
-                            const newStudentGroup = [...oldStudentGroup];
-                            for (let newStudent of newStudentGroup) {
-                              if (student.id === newStudent.id) {
-                                newStudent.comment = comment;
-                                break;
+                    {student.comment ? (
+                      <Grid key="comment" item xs={12}>
+                        <TextField
+                          name="comment"
+                          label="Comment"
+                          value={student.comment}
+                          fullWidth
+                          multiline
+                          onChange={(e) => {
+                            const comment = e.target.value;
+                            setStudentGroup((oldStudentGroup) => {
+                              const newStudentGroup = [...oldStudentGroup];
+                              for (let newStudent of newStudentGroup) {
+                                if (student.id === newStudent.id) {
+                                  newStudent.comment = comment;
+                                  break;
+                                }
                               }
-                            }
-                            return newStudentGroup;
-                          });
-                        }}
-                      />
-                    </Grid>
+                              return newStudentGroup;
+                            });
+                          }}
+                        />
+                      </Grid>
+                    ) : null}
                   </Grid>
                   <Stack
                     direction="row"

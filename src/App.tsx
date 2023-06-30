@@ -20,7 +20,7 @@ export const App = () => {
     >
       <div
         style={{
-          width: "clamp(120px, 75%, 780px)",
+          width: "clamp(100px, 75%, 780px)",
         }}
       >
         <Title />

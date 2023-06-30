@@ -89,7 +89,7 @@ export const ClassUpload = ({ setStudents }: ClassUploadProps) => {
         href="/template.csv"
         download={true}
       >
-        Get Template File
+        Template
       </Button>
       {error ? <p>Error when parsing file: {error?.message}</p> : null}
     </Stack>
